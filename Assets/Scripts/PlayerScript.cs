@@ -15,6 +15,7 @@ public class PlayerScript : MonoBehaviour
 
     public GameObject mainCamera;
 
+    private int nowPos = 0; //left:-1, center:0, right:1
 
     // Start is called before the first frame update
     void Start()
@@ -32,9 +33,29 @@ public class PlayerScript : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.UpArrow)) MoveCenter();
 
         Vector3 moveVector = Vector3.zero;
-        if (Input.GetMouseButtonDown(0))
+        if (Input.touchCount > 0 || Input.GetMouseButtonDown(0))
         {
-            Jump(ref moveVector);
+            Debug.Log("タッチ位置"+ Input.mousePosition + "画面幅" + Screen.width);
+            float x = Input.mousePosition.x;
+            float n = Screen.width / 3;
+            int newPos = 0;
+            if (x < n) newPos = -1;
+            else if (x < n * 2) newPos = 0;
+            else newPos = 1;
+
+            if(newPos != nowPos)
+            {
+                switch (newPos)
+                {
+                    case -1: MoveLeft(); break;
+                    case 0: MoveCenter(); break;
+                    case 1: MoveRight(); break;
+                }
+            }
+            else
+            {
+                Jump(ref moveVector);
+            }
         }
 
         // 速度制限
@@ -56,18 +77,21 @@ public class PlayerScript : MonoBehaviour
     {
         Vector3 vc = characterRigidBody.position;
         vc.x = -moveSize;
+        nowPos = -1;
         characterRigidBody.position = vc;
     }
     void MoveRight()
     {
         Vector3 vc = characterRigidBody.position;
         vc.x = moveSize;
+        nowPos = 1;
         characterRigidBody.position = vc;
     }
     void MoveCenter()
     {
         Vector3 vc = characterRigidBody.position;
         vc.x = 0f;
+        nowPos = 0;
         characterRigidBody.position = vc;
     }
 }
