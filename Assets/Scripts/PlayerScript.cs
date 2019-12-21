@@ -27,42 +27,20 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         // 場所の移動
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            Vector3 vc = characterRigidBody.position;
-            vc.x = -.5f;
-            characterRigidBody.position = vc;
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Vector3 vc = characterRigidBody.position;
-            vc.x = .5f;
-            characterRigidBody.position = vc;
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            Vector3 vc = characterRigidBody.position;
-            vc.x = 0;
-            characterRigidBody.position = vc;
-        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) MoveLeft();
+        else if (Input.GetKeyDown(KeyCode.RightArrow)) MoveRight();
+        else if (Input.GetKeyDown(KeyCode.UpArrow)) MoveCenter();
 
         Vector3 moveVector = Vector3.zero;
         if (Input.GetMouseButtonDown(0))
         {
             Jump(ref moveVector);
         }
+
+        // 速度制限
         if (MAX_SPEED > characterRigidBody.velocity.z)
         {
             moveVector.z = SPEED;
-        }
-        else
-        {
-            characterRigidBody.velocity = new Vector3(
-                characterRigidBody.velocity.x,
-                characterRigidBody.velocity.y,
-                30
-                );
-            MAX_SPEED = 30;
         }
         characterRigidBody.AddForce(moveVector);
         mainCamera.transform.position = new Vector3(0, (float)(transform.position.y + 1.8), (float)(transform.position.z - 6));
@@ -71,5 +49,25 @@ public class PlayerScript : MonoBehaviour
     void Jump(ref Vector3 moveVector)
     {
         moveVector.y = JUMP;
+    }
+
+    const float moveSize = .5f;
+    void MoveLeft()
+    {
+        Vector3 vc = characterRigidBody.position;
+        vc.x = -moveSize;
+        characterRigidBody.position = vc;
+    }
+    void MoveRight()
+    {
+        Vector3 vc = characterRigidBody.position;
+        vc.x = moveSize;
+        characterRigidBody.position = vc;
+    }
+    void MoveCenter()
+    {
+        Vector3 vc = characterRigidBody.position;
+        vc.x = 0f;
+        characterRigidBody.position = vc;
     }
 }
