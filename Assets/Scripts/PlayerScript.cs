@@ -67,9 +67,21 @@ public class PlayerScript : MonoBehaviour
         mainCamera.transform.position = new Vector3(0, (float)(transform.position.y + 1.8), (float)(transform.position.z - 6));
     }
 
+    private bool isJumping = false;
     void Jump(ref Vector3 moveVector)
     {
-        moveVector.y = JUMP;
+        if (!isJumping)
+        {
+            moveVector.y = JUMP;
+            isJumping = true;
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Field"))
+        {
+            isJumping = false;
+        }
     }
 
     const float moveSize = .5f;
